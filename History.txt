@@ -1,0 +1,20 @@
+GreenBeretGBA revision history
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+
+
+V0.2.0 - 2021-03-17 (FluBBa)
+	Added load/save state.
+
+V0.1.7 - 2021-02-14 (FluBBa)
+	Silences sound when in menu.
+	Fixed input when screen flipped.
+
+V0.1.6 - 2020-06-08 (FluBBa)
+	Added support for flipped sprites.
+
+V0.1.5 - 2019-07-13 (FluBBa)
+	Fixed sound tempo.
+
+V0.1.0 - 2019-06-30 (FluBBa)
+   Initial release, plays Green Beret with sound.
+

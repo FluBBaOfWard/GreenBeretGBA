@@ -1,0 +1,7 @@
+build
+include/renegade
+*.elf
+*.gba
+*.sav
+GreenBeretGBA.xcodeproj/project.xcworkspace/xcuserdata
+GreenBeretGBA.xcodeproj/xcuserdata

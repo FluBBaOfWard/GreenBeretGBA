@@ -1,0 +1,20 @@
+GreenBeretGBA To do
+-------------------
+
+
+
+Misc:
+
+Graphic:
+	See K005849_todo.txt
+
+CPU:
+	Timing?
+
+GUI:
+
+Sound:
+	Update more often?
+
+Games:
+
