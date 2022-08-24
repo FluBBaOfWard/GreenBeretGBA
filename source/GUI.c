@@ -12,7 +12,7 @@
 #include "K005849/Version.h"
 #include "SN76496/Version.h"
 
-#define EMUVERSION "V0.2.0 2021-04-24"
+#define EMUVERSION "V0.2.1 2022-08-23"
 
 const fptr fnMain[] = {nullUI, subUI, subUI, subUI, subUI, subUI, subUI, subUI, subUI};
 
@@ -26,12 +26,11 @@ const fptr fnList6[] = {difficultSet, coinASet, coinBSet, livesSet, bonusSet, ca
 const fptr fnList7[] = {uiDummy};
 const fptr fnList8[] = {quickSelectGame, quickSelectGame, quickSelectGame, quickSelectGame};
 const fptr *const fnListX[] = {fnList0, fnList1, fnList2, fnList3, fnList4, fnList5, fnList6, fnList7, fnList8};
-const u8 menuXitems[] = {ARRSIZE(fnList0), ARRSIZE(fnList1), ARRSIZE(fnList2), ARRSIZE(fnList3), ARRSIZE(fnList4), ARRSIZE(fnList5), ARRSIZE(fnList6), ARRSIZE(fnList7), ARRSIZE(fnList8)};
-const fptr drawuiX[] = {uiNullNormal, uiMainMenu, uiFile, uiController, uiDisplay, uiSettings, uiDipswitches, uiAbout, uiLoadGame};
-const u8 menuXback[] = {0,0,1,1,1,1,1,1,2};
+const u8 menuXItems[] = {ARRSIZE(fnList0), ARRSIZE(fnList1), ARRSIZE(fnList2), ARRSIZE(fnList3), ARRSIZE(fnList4), ARRSIZE(fnList5), ARRSIZE(fnList6), ARRSIZE(fnList7), ARRSIZE(fnList8)};
+const fptr drawUIX[] = {uiNullNormal, uiMainMenu, uiFile, uiController, uiDisplay, uiSettings, uiDipswitches, uiAbout, uiLoadGame};
+const u8 menuXBack[] = {0,0,1,1,1,1,1,1,2};
 
-int emuSettings = 1;
-u8 g_gammaValue = 0;
+u8 gGammaValue = 0;
 
 char *const autoTxt[]   = {"Off","On","With R"};
 char *const speedTxt[]  = {"Normal","200%","Max","50%"};
@@ -131,10 +130,10 @@ void uiController() {
 void uiDisplay() {
 	setupSubMenu("Display Settings");
 	drawSubItem("Display: ", dispTxt[g_scaling]);
-	drawSubItem("Scaling: ", flickTxt[g_flicker]);
-	drawSubItem("Gamma: ", brighTxt[g_gammaValue]);
-	drawSubItem("Disable Background: ", autoTxt[g_gfxMask&1]);
-	drawSubItem("Disable Sprites: ", autoTxt[(g_gfxMask>>4)&1]);
+	drawSubItem("Scaling: ", flickTxt[gFlicker]);
+	drawSubItem("Gamma: ", brighTxt[gGammaValue]);
+	drawSubItem("Disable Background: ", autoTxt[gGfxMask&1]);
+	drawSubItem("Disable Sprites: ", autoTxt[(gGfxMask>>4)&1]);
 }
 
 void uiSettings() {
@@ -143,7 +142,7 @@ void uiSettings() {
 	drawSubItem("Autoload State: ", autoTxt[(emuSettings>>2)&1]);
 	drawSubItem("Autosave Settings: ", autoTxt[(emuSettings>>9)&1]);
 	drawSubItem("Autopause Game: ", autoTxt[emuSettings&1]);
-	drawSubItem("Debug Output: ", autoTxt[g_debugSet&1]);
+	drawSubItem("Debug Output: ", autoTxt[gDebugSet&1]);
 	drawSubItem("Autosleep: ", sleepTxt[(emuSettings>>4)&3]);
 }
 
@@ -162,9 +161,9 @@ void uiDipswitches() {
 	drawSubItem("Service Mode: ", autoTxt[(g_dipSwitch2>>2)&1]);
 
 	setMenuItemRow(15);
-	int2str(coinCounter0, s);
+	int2Str(coinCounter0, s);
 	drawSubItem("CoinCounter1:       ", s);
-	int2str(coinCounter1, s);
+	int2Str(coinCounter1, s);
 	drawSubItem("CoinCounter2:       ", s);
 }
 
@@ -207,21 +206,21 @@ void scalingSet(){
 
 /// Change gamma (brightness)
 void brightSet() {
-	g_gammaValue++;
-	if (g_gammaValue > 4) g_gammaValue=0;
-	paletteInit(g_gammaValue);
+	gGammaValue++;
+	if (gGammaValue > 4) gGammaValue=0;
+	paletteInit(gGammaValue);
 	paletteTxAll();					// Make new palette visible
 	setupMenuPalette();
 }
 
 /// Turn on/off rendering of background
 void bgrLayerSet(){
-	g_gfxMask ^= 0x03;
+	gGfxMask ^= 0x03;
 }
 
 /// Turn on/off rendering of sprites
 void sprLayerSet(){
-	g_gfxMask ^= 0x10;
+	gGfxMask ^= 0x10;
 }
 
 

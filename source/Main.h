@@ -5,10 +5,6 @@
 extern "C" {
 #endif
 
-extern bool enableExit;
-extern bool pauseEmulation;
-extern int powerButton;
-extern int sleepTime;
 extern int selectedGame;
 extern u16 *menuMap;
 

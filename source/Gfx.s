@@ -14,10 +14,10 @@
 	.global endFrame
 	.global gfxState
 //	.global oamBufferReady
-	.global g_flicker
-	.global g_twitch
+	.global gFlicker
+	.global gTwitch
 	.global g_scaling
-	.global g_gfxMask
+	.global gGfxMask
 	.global vblIrqHandler
 	.global yStart
 
@@ -83,7 +83,7 @@ gfxReset:					;@ Called with CPU reset
 	mov r2,#0x04000
 	bl memcpy
 
-	ldr r0,=g_gammaValue
+	ldr r0,=gGammaValue
 	ldrb r0,[r0]
 	bl paletteInit				;@ Do palette mapping
 	bl paletteTxAll				;@ Transfer it
@@ -200,9 +200,9 @@ vblIrqHandler:
 	mov r7,r4,lsl#16
 	orr r7,r7,#(GAME_WIDTH-SCREEN_WIDTH)/2
 
-	ldr r0,g_flicker
+	ldr r0,gFlicker
 	eors r0,r0,r0,lsl#31
-	str r0,g_flicker
+	str r0,gFlicker
 	addpl r6,r6,r6,lsl#16
 
 	ldr r5,=SCROLLBUFF
@@ -251,7 +251,7 @@ scrolLoop2:
 	ldrb r2,[koptr,#sprBank]
 
 	mov r0,#0x003B
-	ldrb r1,g_gfxMask
+	ldrb r1,gGfxMask
 	bic r0,r0,r1
 	tst r2,#0x80
 	biceq r0,r0,#0x10
@@ -264,12 +264,12 @@ scrolLoop2:
 
 
 ;@----------------------------------------------------------------------------
-g_flicker:		.byte 1
+gFlicker:		.byte 1
 				.space 2
-g_twitch:		.byte 0
+gTwitch:		.byte 0
 
 g_scaling:		.byte SCALED
-g_gfxMask:		.byte 0
+gGfxMask:		.byte 0
 yStart:			.byte 0
 				.byte 0
 ;@----------------------------------------------------------------------------

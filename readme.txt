@@ -1,4 +1,4 @@
-GreenBeretGBA V0.2.0
+GreenBeretGBA V0.2.1
 --------------------------------------------------------------------------------
 This is a Green Beret, Rush'n Attack & Mr. Goemon - Arcade emulator for the GBA.
 It has bugs in the sprite rendering and no tile priority support.

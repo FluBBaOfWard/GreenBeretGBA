@@ -85,6 +85,7 @@ soundReset:
 ;@----------------------------------------------------------------------------
 	stmfd sp!,{lr}
 	ldr snptr,=SN76496_0
+	mov r1,#1					;@ SN76496 chip type
 	bl sn76496Reset				;@ Sound
 	ldmfd sp!,{lr}
 	bx lr

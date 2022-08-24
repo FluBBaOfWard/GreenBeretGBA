@@ -14,10 +14,7 @@
 static void checkTimeOut(void);
 static void setupGraphics(void);
 
-bool enableExit = false;
-bool pauseEmulation = false;
 int selectedGame = 0;
-int sleepTime = 60*60*5;			// 5 min
 static int sleepTimer = 60*60*5;	// 5 min
 
 u16 *menuMap;
@@ -146,5 +143,5 @@ static void setupGraphics() {
 }
 
 void setupMenuPalette() {
-	convertPalette(&EMUPALBUFF[0xE0], guiPalette, 32, g_gammaValue);
+	convertPalette(&EMUPALBUFF[0xE0], guiPalette, 32, gGammaValue);
 }
