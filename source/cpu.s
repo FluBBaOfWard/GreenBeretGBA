@@ -16,7 +16,11 @@
 	.syntax unified
 	.arm
 
-	.section .ewram,"ax"
+#if GBA
+	.section .ewram, "ax", %progbits	;@ For the GBA
+#else
+	.section .text						;@ For anything else
+#endif
 	.align 2
 ;@----------------------------------------------------------------------------
 run:		;@ Return after 1 frame
@@ -57,12 +61,13 @@ runStart:
 ;@----------------------------------------------------------------------------
 konamiFrameLoop:
 ;@----------------------------------------------------------------------------
+//	ldr r0,cyclesPerScanline
+	mov r0,#CYCLE_PSL
+	bl Z80RunXCycles
 	ldr koptr,=k005849_0
 	bl doScanline
 	cmp r0,#0
-//	ldrne r0,cyclesPerScanline
-	movne r0,#CYCLE_PSL
-	bne Z80RunXCycles
+	bne konamiFrameLoop
 	b konamiEnd
 ;@----------------------------------------------------------------------------
 
@@ -111,11 +116,8 @@ cpuReset:		;@ Called by loadCart/resetGame
 	adr r4,cpuMapData
 	bl mapZ80Memory
 
-	ldr r0,=konamiFrameLoop
-	str r0,[z80optbl,#z80NextTimeout]
-	str r0,[z80optbl,#z80NextTimeout_]
-
-	mov r0,#0
+	mov r0,z80optbl
+	mov r1,#0
 	bl Z80Reset
 	ldmfd sp!,{lr}
 	bx lr

@@ -60,7 +60,7 @@ Dipswitches:
 ------------
 	Lot of settings for the actual arcade game, difficulty/lives etc.
 -----
-Help:
+About:
 -----
 	Some dumb info about the game and emulator...
 ------
