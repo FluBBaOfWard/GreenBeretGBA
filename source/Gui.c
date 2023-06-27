@@ -1,6 +1,6 @@
 #include <gba.h>
 
-#include "GUI.h"
+#include "Gui.h"
 #include "Shared/EmuMenu.h"
 #include "Shared/AsmExtra.h"
 #include "Main.h"
@@ -8,11 +8,12 @@
 #include "Cart.h"
 #include "Gfx.h"
 #include "io.h"
+#include "cpu.h"
 #include "ARMZ80/Version.h"
 #include "K005849/Version.h"
 #include "SN76496/Version.h"
 
-#define EMUVERSION "V0.2.1 2022-09-28"
+#define EMUVERSION "V0.2.1 2023-06-27"
 
 static void uiDebug(void);
 
@@ -23,15 +24,14 @@ const fptr fnList1[] = {ui2, ui3, ui4, ui5, ui6, ui7, ui8, gbaSleep, resetGame};
 const fptr fnList2[] = {ui9, loadState, saveState, saveSettings, resetGame};
 const fptr fnList3[] = {autoBSet, autoASet, controllerSet, swapABSet};
 const fptr fnList4[] = {scalingSet, flickSet, brightSet};
-const fptr fnList5[] = {speedSet, autoStateSet, autoSettingsSet, autoPauseGameSet, sleepSet};
-const fptr fnList6[] = {difficultSet, coinASet, coinBSet, livesSet, bonusSet, cabinetSet, demoSet, flipSet, uprightSet, serviceSet};
-const fptr fnList7[] = {debugTextSet, bgrLayerSet, sprLayerSet};
+const fptr fnList5[] = {speedSet, autoStateSet, autoSettingsSet, autoPauseGameSet, ewramSet, sleepSet};
+const fptr fnList6[] = {debugTextSet, bgrLayerSet, sprLayerSet, stepFrame};
+const fptr fnList7[] = {difficultSet, coinASet, coinBSet, livesSet, bonusSet, cabinetSet, demoSet, flipSet, uprightSet, serviceSet};
 const fptr fnList8[] = {uiDummy};
 const fptr fnList9[] = {quickSelectGame, quickSelectGame, quickSelectGame, quickSelectGame};
 const fptr *const fnListX[] = {fnList0, fnList1, fnList2, fnList3, fnList4, fnList5, fnList6, fnList7, fnList8, fnList9};
 const u8 menuXItems[] = {ARRSIZE(fnList0), ARRSIZE(fnList1), ARRSIZE(fnList2), ARRSIZE(fnList3), ARRSIZE(fnList4), ARRSIZE(fnList5), ARRSIZE(fnList6), ARRSIZE(fnList7), ARRSIZE(fnList8), ARRSIZE(fnList9)};
 const fptr drawUIX[] = {uiNullNormal, uiMainMenu, uiFile, uiController, uiDisplay, uiSettings, uiDebug, uiDipswitches, uiAbout, uiLoadGame};
-const u8 menuXBack[] = {0,0,1,1,1,1,1,1,1,2};
 
 u8 gGammaValue = 0;
 
@@ -97,8 +97,8 @@ void uiMainMenu() {
 	drawMenuItem("Controller->");
 	drawMenuItem("Display->");
 	drawMenuItem("Settings->");
-	drawMenuItem("DipSwitches->");
 	drawMenuItem("Debug->");
+	drawMenuItem("DipSwitches->");
 	drawMenuItem("About->");
 	drawMenuItem("Sleep");
 	drawMenuItem("Restart");
@@ -133,7 +133,7 @@ void uiController() {
 
 void uiDisplay() {
 	setupSubMenu("Display Settings");
-	drawSubItem("Display: ", dispTxt[g_scaling]);
+	drawSubItem("Display: ", dispTxt[gScaling]);
 	drawSubItem("Scaling: ", flickTxt[gFlicker]);
 	drawSubItem("Gamma: ", brighTxt[gGammaValue]);
 }
@@ -144,6 +144,7 @@ void uiSettings() {
 	drawSubItem("Autoload State: ", autoTxt[(emuSettings>>2)&1]);
 	drawSubItem("Autosave Settings: ", autoTxt[(emuSettings>>1)&1]);
 	drawSubItem("Autopause Game: ", autoTxt[emuSettings&1]);
+	drawSubItem("EWRAM Overclock: ", autoTxt[ewram&1]);
 	drawSubItem("Autosleep: ", sleepTxt[(emuSettings>>8)&3]);
 }
 
@@ -152,6 +153,7 @@ void uiDebug() {
 	drawSubItem("Debug Output: ", autoTxt[gDebugSet&1]);
 	drawSubItem("Disable Background: ", autoTxt[gGfxMask&1]);
 	drawSubItem("Disable Sprites: ", autoTxt[(gGfxMask>>4)&1]);
+	drawSubItem("Step Frame", NULL);
 }
 
 void uiDipswitches() {
@@ -208,7 +210,7 @@ void swapABSet() {
 
 /// Turn on/off scaling
 void scalingSet(){
-	g_scaling ^= 0x01;
+	gScaling ^= 0x01;
 	refreshGfx();
 }
 

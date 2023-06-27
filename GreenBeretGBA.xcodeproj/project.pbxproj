@@ -17,9 +17,9 @@
 		9C28401A232D4E7B00C9DCFF /* gba_asm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gba_asm.h; sourceTree = "<group>"; };
 		9C3D5AF025E8471300E8CD56 /* EmuFont.grit */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = EmuFont.grit; sourceTree = "<group>"; };
 		9C3D5AF125E8471300E8CD56 /* EmuFont.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = EmuFont.png; sourceTree = "<group>"; };
-		9C41DD9722C7E4F100BD4C64 /* GUI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GUI.h; sourceTree = "<group>"; };
+		9C41DD9722C7E4F100BD4C64 /* Gui.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Gui.h; sourceTree = "<group>"; };
 		9C41DD9822C7E4F100BD4C64 /* Main.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Main.h; sourceTree = "<group>"; };
-		9C41DD9922C7E4F100BD4C64 /* GUI.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = GUI.c; sourceTree = "<group>"; };
+		9C41DD9922C7E4F100BD4C64 /* Gui.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = Gui.c; sourceTree = "<group>"; };
 		9C41DD9C22C7EADB00BD4C64 /* GreenBeretGBA_todo.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = GreenBeretGBA_todo.txt; sourceTree = "<group>"; };
 		9C41DD9D22C7EADB00BD4C64 /* readme.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = readme.txt; sourceTree = "<group>"; };
 		9C41DD9E22C7EADB00BD4C64 /* History.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = History.txt; sourceTree = "<group>"; };
@@ -59,6 +59,11 @@
 		9C8F3403248B96C400996E5A /* SN76496.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SN76496.h; sourceTree = "<group>"; };
 		9C9CA7A925F2D44200DC6DF5 /* GreenBeret.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = GreenBeret.c; sourceTree = "<group>"; };
 		9C9CA7AA25F2D44200DC6DF5 /* GreenBeret.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GreenBeret.h; sourceTree = "<group>"; };
+		9CA4424D2A4AFE4D00259966 /* FileHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FileHelper.h; sourceTree = "<group>"; };
+		9CA4424E2A4AFE4D00259966 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		9CA4424F2A4AFE4D00259966 /* FlashCart.s */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.asm; path = FlashCart.s; sourceTree = "<group>"; };
+		9CA442502A4AFE4D00259966 /* EmuSettings.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = EmuSettings.h; sourceTree = "<group>"; };
+		9CA442512A4AFE4D00259966 /* FileHelper.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = FileHelper.c; sourceTree = "<group>"; };
 		9CC5FEBD22EB4AFB00AFB8DF /* SN76496.i */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c.preprocessed; path = SN76496.i; sourceTree = "<group>"; };
 		9CC5FEBE22F0BBA800AFB8DF /* History.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = History.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -143,8 +148,13 @@
 			isa = PBXGroup;
 			children = (
 				9C3D5AEF25E8471300E8CD56 /* graphics */,
+				9CA4424E2A4AFE4D00259966 /* README.md */,
+				9CA442502A4AFE4D00259966 /* EmuSettings.h */,
 				9C41DDB522C7ECF200BD4C64 /* EmuMenu.h */,
 				9C41DDBB22C7ECF200BD4C64 /* EmuMenu.c */,
+				9CA442512A4AFE4D00259966 /* FileHelper.c */,
+				9CA4424D2A4AFE4D00259966 /* FileHelper.h */,
+				9CA4424F2A4AFE4D00259966 /* FlashCart.s */,
 				9C28401A232D4E7B00C9DCFF /* gba_asm.h */,
 				9C41DDB922C7ECF200BD4C64 /* AsmExtra.h */,
 				9C41DDB822C7ECF200BD4C64 /* AsmExtra.s */,
@@ -162,8 +172,8 @@
 				9C50825625D6A9DC00A8E1BA /* Emubase.h */,
 				9C41DD9822C7E4F100BD4C64 /* Main.h */,
 				35BA496A1886BBE3006870D9 /* Main.c */,
-				9C41DD9722C7E4F100BD4C64 /* GUI.h */,
-				9C41DD9922C7E4F100BD4C64 /* GUI.c */,
+				9C41DD9722C7E4F100BD4C64 /* Gui.h */,
+				9C41DD9922C7E4F100BD4C64 /* Gui.c */,
 				9C9CA7AA25F2D44200DC6DF5 /* GreenBeret.h */,
 				9C9CA7A925F2D44200DC6DF5 /* GreenBeret.c */,
 				9C50825A25D6A9F400A8E1BA /* Cart.h */,

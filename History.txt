@@ -2,8 +2,9 @@ GreenBeretGBA revision history
 -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
 
 
-V0.2.1 - 2022-09-28 (FluBBa)
-	Cleaned up source.
+V0.2.1 - 2023-06-27 (FluBBa)
+	Added new debug menu.
+	Better menu traversing.
 
 V0.2.0 - 2021-03-17 (FluBBa)
 	Added load/save state.

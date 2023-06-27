@@ -10,7 +10,8 @@
 #include "Emubase.h"
 #include "Main.h"
 #include "Shared/EmuMenu.h"
-#include "GUI.h"
+#include "Shared/EmuSettings.h"
+#include "Gui.h"
 #include "GreenBeret.h"
 #include "Cart.h"
 #include "Gfx.h"
@@ -61,9 +62,9 @@ int loadSettings() {
 	g_dipSwitch0 = cfg.dipSwitch0;
 	g_dipSwitch1 = cfg.dipSwitch1;
 	g_dipSwitch2 = cfg.dipSwitch2;
-	g_scaling    = cfg.scaling&1;
-	gFlicker    = cfg.flicker&1;
-	gGammaValue = cfg.gammaValue;
+	gScaling     = cfg.scaling & SCALED;
+	gFlicker     = cfg.flicker&1;
+	gGammaValue  = cfg.gammaValue;
 	emuSettings  = cfg.emuSettings &~ 0xC0;			// Clear speed setting.
 	sleepTime    = cfg.sleepTime;
 	joyCfg       = (joyCfg&~0x400)|((cfg.controller&1)<<10);
@@ -79,7 +80,7 @@ void saveSettings() {
 	cfg.dipSwitch0  = g_dipSwitch0;
 	cfg.dipSwitch1  = g_dipSwitch1;
 	cfg.dipSwitch2  = g_dipSwitch2;
-	cfg.scaling     = g_scaling&1;
+	cfg.scaling     = gScaling & SCALED;
 	cfg.flicker     = gFlicker&1;
 	cfg.gammaValue  = gGammaValue;
 	cfg.emuSettings = emuSettings &~ 0xC0;			// Clear speed setting.

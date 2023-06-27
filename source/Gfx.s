@@ -16,7 +16,7 @@
 //	.global oamBufferReady
 	.global gFlicker
 	.global gTwitch
-	.global g_scaling
+	.global gScaling
 	.global gGfxMask
 	.global vblIrqHandler
 	.global yStart
@@ -190,7 +190,7 @@ vblIrqHandler:
 	bl vblSound1
 	bl calculateFPS
 
-	ldrb r0,g_scaling
+	ldrb r0,gScaling
 	cmp r0,#UNSCALED
 	moveq r6,#0
 	ldrne r6,=0x80000000 + ((GAME_HEIGHT-SCREEN_HEIGHT)*0x10000) / (SCREEN_HEIGHT-1)	;@ NDS 0x2B10 (was 0x2AAB)
@@ -268,7 +268,7 @@ gFlicker:		.byte 1
 				.space 2
 gTwitch:		.byte 0
 
-g_scaling:		.byte SCALED
+gScaling:		.byte SCALED
 gGfxMask:		.byte 0
 yStart:			.byte 0
 				.byte 0

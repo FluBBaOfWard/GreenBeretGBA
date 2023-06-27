@@ -17,14 +17,11 @@
 	.extern pauseEmulation
 
 
-;@----------------------------------------------------------------------------
-
 	.syntax unified
 	.arm
 
-	.section .ewram,"ax"
+	.section .ewram, "ax"
 	.align 2
-
 ;@----------------------------------------------------------------------------
 soundInit:
 	.type soundInit STT_FUNC
@@ -70,12 +67,11 @@ soundInit:
 	ldrb r2,soundMode			;@ If r2=0, no sound.
 	cmp r2,#1
 
-	add r1,r5,#REG_TM0CNT_L		;@ Timer 0 controls sample rate:
-	mov r4,#0
-	str r4,[r1]					;@ Stop timer 0
+	mov r4,#0					;@ Timer 0 controls sample rate:
+	str r4,[r5,#REG_TM0CNT_L]	;@ Stop timer 0
 	ldreq r3,[snptr,#mixRate]	;@ 924=Low, 532=High.
 	rsbeq r4,r3,#0x810000		;@ Timer 0 on. Frequency = 0x1000000/r3 Hz
-	streq r4,[r1]
+	streq r4,[r5,#REG_TM0CNT_L]
 
 	ldmfd sp!,{r3-r5,lr}
 	bx lr
@@ -125,7 +121,7 @@ vblSound1:
 ;@----------------------------------------------------------------------------
 vblSound2:
 ;@----------------------------------------------------------------------------
-	;@ update DMA buffer for PCM
+	;@ Update DMA buffer for PCM
 	ldrb r0,soundMode			;@ If r0=0, no sound.
 	cmp r0,#0
 	bxeq lr

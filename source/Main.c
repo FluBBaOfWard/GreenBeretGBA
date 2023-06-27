@@ -3,7 +3,7 @@
 #include "Main.h"
 #include "Shared/EmuMenu.h"
 #include "Shared/AsmExtra.h"
-#include "GUI.h"
+#include "Gui.h"
 #include "EmuFont.h"
 #include "Cart.h"
 #include "cpu.h"
@@ -67,8 +67,9 @@ int main(int argc, char **argv) {
 //---------------------------------------------------------------------------------
 void pausVBlank(int count) {
 //---------------------------------------------------------------------------------
-	while (--count)
+	while (--count) {
 		waitVBlank();
+	}
 }
 
 //---------------------------------------------------------------------------------

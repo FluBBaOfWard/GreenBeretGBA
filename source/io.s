@@ -184,7 +184,7 @@ coinW:
 	ldr r1,[r1]
 	sub r1,r1,#0x3800
 	add r1,r1,r0,lsl#6
-	str r1,[z80optbl,#z80MemTbl+28]
+	str r1,[z80ptr,#z80MemTbl+28]
 	bx lr
 
 

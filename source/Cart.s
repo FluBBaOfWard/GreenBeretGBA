@@ -165,9 +165,9 @@ z80Mapper:		;@ Rom paging..
 	cmp r1,#0xF8				;@ IO pages?
 	movmi r5,#12
 
-	add r6,z80optbl,#z80ReadTbl
-	add r7,z80optbl,#z80WriteTbl
-	add r8,z80optbl,#z80MemTbl
+	add r6,z80ptr,#z80ReadTbl
+	add r7,z80ptr,#z80WriteTbl
+	add r8,z80ptr,#z80MemTbl
 	b z80MemAps
 z80MemApl:
 	add r6,r6,#4
@@ -199,7 +199,7 @@ romNum:
 	.long 0						;@ RomNumber
 romInfo:						;@ Keep emuflags/BGmirror together for savestate/loadstate
 emuFlags:
-	.byte 0						;@ EmuFlags      (label this so GUI.c can take a peek) see EmuSettings.h for bitfields
+	.byte 0						;@ EmuFlags      (label this so Gui.c can take a peek) see EmuSettings.h for bitfields
 	.byte SCALED				;@ (display type)
 	.byte 0,0					;@ (sprite follow val)
 cartFlags:
