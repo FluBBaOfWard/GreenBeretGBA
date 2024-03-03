@@ -318,7 +318,7 @@ k005849_0R:					;@ I/O read, (0xE000-0xE044)
 	bpl memZ80R7
 	mov r1,addy
 	cmp addy,#0xE100
-	bpl IO_R
+	bpl GreenBeretIO_R
 	stmfd sp!,{addy,lr}
 	adr koptr,k005849_0
 	bl k005849_R
@@ -340,7 +340,7 @@ k005849_0W:					;@ I/O write  (0xE000-0xE044)
 ;@----------------------------------------------------------------------------
 	mov r1,addy
 	cmp addy,#0xE100
-	bpl IO_W
+	bpl GreenBeretIO_W
 	stmfd sp!,{addy,lr}
 	adr koptr,k005849_0
 	bl k005849_W

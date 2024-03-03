@@ -4,8 +4,8 @@
 #include "K005849/K005849.i"
 
 	.global ioReset
-	.global IO_R
-	.global IO_W
+	.global GreenBeretIO_R
+	.global GreenBeretIO_W
 	.global Z80In
 	.global Z80Out
 	.global refreshEMUjoypads
@@ -132,7 +132,7 @@ Input5_R:
 	bx lr
 
 ;@----------------------------------------------------------------------------
-IO_R:			;@ I/O read  (0xE045-0xFFFF)
+GreenBeretIO_R:			;@ I/O read  (0xE045-0xFFFF)
 ;@----------------------------------------------------------------------------
 	cmp addy,#0xF200
 	beq Input4_R
@@ -151,7 +151,7 @@ IO_R:			;@ I/O read  (0xE045-0xFFFF)
 	.long Input2_R				;@ 0xF603
 
 ;@----------------------------------------------------------------------------
-IO_W:			;@I/O write  (0xE045-0xFFFF)
+GreenBeretIO_W:			;@I/O write  (0xE045-0xFFFF)
 ;@----------------------------------------------------------------------------
 	cmp addy,#0xF200
 	bxeq lr

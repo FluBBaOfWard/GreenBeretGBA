@@ -13,10 +13,10 @@
 	.global cartFlags
 	.global romStart
 	.global vromBase0
-	.global vromBase1
 	.global promBase
 
 	.global ROM_Space
+	.global mainCpu
 	.global testState
 
 
@@ -42,9 +42,9 @@ ROM_Space:
 // Tiles
 	.incbin "gberet/577l07.3f"
 // Proms
-	.incbin "gberet/577h09.2f"
-	.incbin "gberet/577h10.5f"
-	.incbin "gberet/577h11.6f"
+	.incbin "gberet/577h09.2f" // RGB Palette
+	.incbin "gberet/577h10.5f" // Sprite Pal LUT
+	.incbin "gberet/577h11.6f" // Character Pal LUT
 
 /*
 	.incbin "gberet/621d01.10c"
@@ -52,9 +52,9 @@ ROM_Space:
 	.incbin "gberet/621d03.4d"
 	.incbin "gberet/621d04.5d"
 	.incbin "gberet/621a05.6d"
-	.incbin "gberet/621a06.5f"
-	.incbin "gberet/621a07.6f"
-	.incbin "gberet/621a08.7f"
+	.incbin "gberet/621a06.5f" // RGB Palette
+	.incbin "gberet/621a07.6f" // Sprite Pal LUT
+	.incbin "gberet/621a08.7f" // Character Pal LUT
 */
 	.section .ewram,"ax"
 	.align 2
@@ -85,48 +85,15 @@ loadCart: 		;@ Called from C:  r0=rom number, r1=emuflags
 
 //	ldr r7,=rawRom
 	ldr r7,=ROM_Space
-								;@ r7=rombase til end of loadcart so DON'T FUCK IT UP
 	cmp r0,#3
 	str r7,romStart				;@ Set rom base
 	add r0,r7,#0xC000			;@ 0xC000
 	addeq r0,r0,#0x4000			;@ Mr. Goemon
 	str r0,vromBase0			;@ Spr & bg
-	str r0,vromBase1			;@
 	add r0,r0,#0x14000
 	str r0,promBase				;@ Colour prom
 
-	ldr r4,=MEMMAPTBL_
-	ldr r5,=RDMEMTBL_
-	ldr r6,=WRMEMTBL_
-
-	mov r0,#0
-	ldr r2,=memZ80R0
-	ldr r3,=rom_W
-tbLoop1:
-	add r1,r7,r0,lsl#13
-	bl initMappingPage
-	add r0,r0,#1
-	cmp r0,#0x88
-	bne tbLoop1
-
-	ldr r2,=empty_R
-	ldr r3,=empty_W
-tbLoop2:
-	bl initMappingPage
-	add r0,r0,#1
-	cmp r0,#0x100
-	bne tbLoop2
-
-	mov r0,#0xFE				;@ Graphic
-	ldr r1,=emuRAM
-	ldr r2,=memZ80R6
-	ldr r3,=k005849Ram_0W
-	bl initMappingPage
-
-	mov r0,#0xFF				;@ IO
-	ldr r2,=IO_R
-	ldr r3,=IO_W
-	bl initMappingPage
+	bl doCpuMappingGreenBeret
 
 	bl gfxReset
 	bl ioReset
@@ -137,61 +104,54 @@ tbLoop2:
 	bx lr
 
 ;@----------------------------------------------------------------------------
-initMappingPage:	;@ r0=page, r1=mem, r2=rdMem, r3=wrMem
-;@----------------------------------------------------------------------------
-	str r1,[r4,r0,lsl#2]		;@ MemMap
-	str r2,[r5,r0,lsl#2]		;@ RdMem
-	str r3,[r6,r0,lsl#2]		;@ WrMem
-	bx lr
+greenBeretMapping:						;@ Green Beret
+	.long 0x00, memZ80R0, rom_W									;@ ROM
+	.long 0x01, memZ80R1, rom_W									;@ ROM
+	.long 0x02, memZ80R2, rom_W									;@ ROM
+	.long 0x03, memZ80R3, rom_W									;@ ROM
+	.long 0x04, memZ80R4, rom_W									;@ ROM
+	.long 0x05, memZ80R5, rom_W									;@ ROM
+	.long emuRAM, memZ80R6, k005849Ram_0W						;@ Graphic
+	.long emptySpace, GreenBeretIO_R, GreenBeretIO_W			;@ IO
 
 ;@----------------------------------------------------------------------------
-//	.section .ewram,"ax"
-//	.section itcm
-//	.align 2
+doCpuMappingGreenBeret:
 ;@----------------------------------------------------------------------------
-
+	adr r2,greenBeretMapping
 ;@----------------------------------------------------------------------------
-z80Mapper:		;@ Rom paging..
+doZ80MainCpuMapping:
 ;@----------------------------------------------------------------------------
-	ands r0,r0,#0xFF			;@ Safety
-	bxeq lr
-	stmfd sp!,{r3-r8,lr}
-	ldr r5,=MEMMAPTBL_
-	ldr r2,[r5,r1,lsl#2]!
-	ldr r3,[r5,#-1024]			;@ RDMEMTBL_
-	ldr r4,[r5,#-2048]			;@ WRMEMTBL_
+	ldr r0,=Z80OpTable
+	ldr r1,=mainCpu
+	ldr r1,[r1]
+;@----------------------------------------------------------------------------
+z80Mapper:		;@ Rom paging.. r0=cpuptr, r1=romBase, r2=mapping table.
+;@----------------------------------------------------------------------------
+	stmfd sp!,{r4-r8,lr}
 
-	mov r5,#0
-	cmp r1,#0xF8				;@ IO pages?
-	movmi r5,#12
+	add r7,r0,#z80MemTbl
+	add r8,r0,#z80ReadTbl
+	add lr,r0,#z80WriteTbl
 
-	add r6,z80ptr,#z80ReadTbl
-	add r7,z80ptr,#z80WriteTbl
-	add r8,z80ptr,#z80MemTbl
-	b z80MemAps
-z80MemApl:
-	add r6,r6,#4
-	add r7,r7,#4
-	add r8,r8,#4
-z80MemAp2:
-	add r3,r3,r5
-	sub r2,r2,#0x2000
-z80MemAps:
-	movs r0,r0,lsr#1
-	bcc z80MemApl				;@ C=0
-	strcs r3,[r6],#4			;@ readmem_tbl
-	strcs r4,[r7],#4			;@ writemem_tb
-	strcs r2,[r8],#4			;@ memmap_tbl
-	bne z80MemAp2
+	mov r6,#8
+z80MLoop:
+	ldmia r2!,{r3-r5}
+	cmp r3,#0x100
+	addmi r3,r1,r3,lsl#13
+	rsb r0,r6,#8
+	sub r3,r3,r0,lsl#13
 
+	str r3,[r7],#4
+	str r4,[r8],#4
+	str r5,[lr],#4
+	subs r6,r6,#1
+	bne z80MLoop
 ;@------------------------------------------
-flush:		;@ Update cpu_pc & lastbank
+z80Flush:		;@ Update cpu_pc & lastbank
 ;@------------------------------------------
 	reEncodePC
-
-	ldmfd sp!,{r3-r8,lr}
+	ldmfd sp!,{r4-r8,lr}
 	bx lr
-
 
 ;@----------------------------------------------------------------------------
 
@@ -207,21 +167,16 @@ cartFlags:
 	.space 3
 
 romStart:
+mainCpu:
 	.long 0
 vromBase0:
-	.long 0
-vromBase1:
 	.long 0
 promBase:
 	.long 0
 
 	.section .sbss
-WRMEMTBL_:
-	.space 256*4
-RDMEMTBL_:
-	.space 256*4
-MEMMAPTBL_:
-	.space 256*4
+emptySpace:
+	.space 0x2000
 testState:
 	.space 0x2048+0x34+0x48
 ;@----------------------------------------------------------------------------
