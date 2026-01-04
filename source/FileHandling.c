@@ -12,27 +12,26 @@
 #include "Shared/EmuMenu.h"
 #include "Shared/EmuSettings.h"
 #include "Gui.h"
-#include "GreenBeret.h"
 #include "Cart.h"
 #include "Gfx.h"
 #include "io.h"
+#include "GreenBeret.h"
 
 static const char *const folderName = "acds";
 static const char *const settingName = "settings.cfg";
 
 configdata cfg;
 
-#define GAMECOUNT (4)
-static const char *const gameNames[GAMECOUNT] = {"gberet","rushatck","gberetb","mrgoemon"};
-static const char *const gameZipNames[GAMECOUNT] = {"gberet.zip","rushatck.zip","gberetb.zip","mrgoemon.zip"};
-static const int fileCount[GAMECOUNT] = {11,11,10,8};
-static const char *const romFilenames[GAMECOUNT][11] = {
+static const char *const gameNames[GAME_COUNT] = {"gberet","rushatck","gberetb","mrgoemon"};
+static const char *const gameZipNames[GAME_COUNT] = {"gberet.zip","rushatck.zip","gberetb.zip","mrgoemon.zip"};
+static const int fileCount[GAME_COUNT] = {11,11,10,8};
+static const char *const romFilenames[GAME_COUNT][11] = {
 	{"577l03.10c","577l02.8c","577l01.7c","577l06.5e","577l05.4e","577l08.4f","577l04.3e","577l07.3f","577h09.2f","577h10.5f","577h11.6f"},
 	{"577h03.10c","577h02.8c","577h01.7c","577l06.5e","577h05.4e","577l08.4f","577l04.3e","577h07.3f","577h09.2f","577h10.5f","577h11.6f"},
 	{"2-ic82.10g","3-ic81.10f","7-1c8.2b","6-ic9.2c","5-ic10.2d","4-ic11.2e","1-ic92.12c","577h09","577h10","577h11"},
 	{"621d01.10c","621d02.12c","621d03.4d","621d04.5d","621a05.6d","621a06.5f","621a07.6f","621a08.7f"}
 };
-static const int romFilesizes[GAMECOUNT][11] = {
+static const int romFilesizes[GAME_COUNT][11] = {
 	{0x4000,0x4000,0x4000,0x4000,0x4000,0x4000,0x4000,0x4000,0x20,0x100,0x100},
 	{0x4000,0x4000,0x4000,0x4000,0x4000,0x4000,0x4000,0x4000,0x20,0x100,0x100},
 	{0x8000,0x4000,0x4000,0x4000,0x4000,0x4000,0x4000,0x20,0x100,0x100},

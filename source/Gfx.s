@@ -59,9 +59,9 @@ gfxReset:					;@ Called with CPU reset
 	mov r1,#5					;@ 5*4
 	bl memclr_					;@ Clear GFX regs
 
-	ldr r0,=Z80SetNMIPin
-	ldr r1,=Z80SetIRQPin		;@ Mr. Goemon
-	ldr r2,=Z80SetIRQPin		;@ Green Beret
+	ldr r0,=Z80SetNMIPinCurrentCpu
+	ldr r1,=Z80SetIRQPinCurrentCpu	;@ Mr. Goemon
+	ldr r2,=Z80SetIRQPinCurrentCpu	;@ Green Beret
 	ldr r3,=emuRAM
 	bl k005849Reset0
 
@@ -362,7 +362,11 @@ windowTop:
 	.byte 0
 	.byte 0,0
 
-	.section .sbss
+#ifdef GBA
+	.section .sbss				;@ This is EWRAM on GBA with devkitARM
+#else
+	.section .bss
+#endif
 scrollTemp:
 	.space 0x100*4
 OAM_BUFFER1:

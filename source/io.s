@@ -179,14 +179,7 @@ coinW:
 	addne r1,r1,#1
 	strne r1,coinCounter1
 
-	and r0,r0,#0xE0
-	ldr r1,=romStart
-	ldr r1,[r1]
-	sub r1,r1,#0x3800
-	add r1,r1,r0,lsl#6
-	str r1,[z80ptr,#z80MemTbl+28]
-	bx lr
-
+	b gberetMapRom
 
 ;@----------------------------------------------------------------------------
 Z80In:

@@ -2,46 +2,139 @@
 
 #include "Gui.h"
 #include "Shared/EmuMenu.h"
-#include "Shared/AsmExtra.h"
+#include "Shared/EmuSettings.h"
 #include "Main.h"
 #include "FileHandling.h"
 #include "Cart.h"
 #include "Gfx.h"
 #include "io.h"
 #include "cpu.h"
+#include "GreenBeret.h"
 #include "ARMZ80/Version.h"
 #include "K005849/Version.h"
 #include "SN76496/Version.h"
 
-#define EMUVERSION "V0.2.1 2024-03-03"
+#define EMUVERSION "V0.2.1 2026-01-04"
 
-static void uiDebug(void);
+static void scalingSet(void);
+static const char *getScalingText(void);
+static void controllerSet(void);
+static const char *getControllerText(void);
+static void swapABSet(void);
+static const char *getSwapABText(void);
+static void bgrLayerSet(void);
+static const char *getBgrLayerText(void);
+static void sprLayerSet(void);
+static const char *getSprLayerText(void);
+static void coinASet(void);
+static const char *getCoinAText(void);
+static void coinBSet(void);
+static const char *getCoinBText(void);
+static void difficultSet(void);
+static const char *getDifficultText(void);
+static void livesSet(void);
+static const char *getLivesText(void);
+static void bonusSet(void);
+static const char *getBonusText(void);
+static void cabinetSet(void);
+static const char *getCabinetText(void);
+static void demoSet(void);
+static const char *getDemoText(void);
+static void flipSet(void);
+static const char *getFlipText(void);
+static void uprightSet(void);
+static const char *getUprightText(void);
+static void serviceSet(void);
+static const char *getServiceText(void);
+static void brightSet(void);
 
-const fptr fnMain[] = {nullUI, subUI, subUI, subUI, subUI, subUI, subUI, subUI, subUI, subUI, subUI};
 
-const fptr fnList0[] = {uiDummy};
-const fptr fnList1[] = {ui2, ui3, ui4, ui5, ui6, ui7, ui8, gbaSleep, resetGame};
-const fptr fnList2[] = {ui9, loadState, saveState, saveSettings, resetGame};
-const fptr fnList3[] = {autoBSet, autoASet, controllerSet, swapABSet};
-const fptr fnList4[] = {scalingSet, flickSet, brightSet};
-const fptr fnList5[] = {speedSet, autoStateSet, autoSettingsSet, autoPauseGameSet, ewramSet, sleepSet};
-const fptr fnList6[] = {debugTextSet, bgrLayerSet, sprLayerSet, stepFrame};
-const fptr fnList7[] = {difficultSet, coinASet, coinBSet, livesSet, bonusSet, cabinetSet, demoSet, flipSet, uprightSet, serviceSet};
-const fptr fnList8[] = {uiDummy};
-const fptr fnList9[] = {quickSelectGame, quickSelectGame, quickSelectGame, quickSelectGame};
-const fptr *const fnListX[] = {fnList0, fnList1, fnList2, fnList3, fnList4, fnList5, fnList6, fnList7, fnList8, fnList9};
-const u8 menuXItems[] = {ARRSIZE(fnList0), ARRSIZE(fnList1), ARRSIZE(fnList2), ARRSIZE(fnList3), ARRSIZE(fnList4), ARRSIZE(fnList5), ARRSIZE(fnList6), ARRSIZE(fnList7), ARRSIZE(fnList8), ARRSIZE(fnList9)};
-const fptr drawUIX[] = {uiNullNormal, uiMainMenu, uiFile, uiController, uiDisplay, uiSettings, uiDebug, uiDipswitches, uiAbout, uiLoadGame};
+const MItem dummyItems[] = {
+	{"", uiDummy},
+};
+const MItem mainItems[] = {
+	{"File->", ui2},
+	{"Controller->", ui3},
+	{"Display->", ui4},
+	{"Settings->", ui5},
+	{"Debug->", ui6},
+	{"DipSwitches->", ui7},
+	{"Help->", ui8},
+	{"Sleep", gbaSleep},
+	{"Restart", resetGame},
+	{"Exit", ui10},
+};
+const MItem fileItems[] = {
+	{"Load Game->", ui9},
+	{"Load State", loadState},
+	{"Save State", saveState},
+	{"Save Settings", saveSettings},
+	{"Reset Game", resetGame},
+};
+const MItem ctrlItems[] = {
+	{"B Autofire: ", autoBSet, getAutoBText},
+	{"A Autofire: ", autoASet, getAutoAText},
+	{"Controller: ", controllerSet, getControllerText},
+	{"Swap A-B:   ", swapABSet, getSwapABText},
+};
+const MItem displayItems[] = {
+	{"Display: ", scalingSet, getScalingText},
+	{"Scaling: ", flickSet, getFlickText},
+	{"Gamma: ", brightSet, getGammaText},
+};
+const MItem setItems[] = {
+	{"Speed: ", speedSet, getSpeedText},
+	{"Autoload State: ", autoStateSet, getAutoStateText},
+	{"Autosave Settings: ", autoSettingsSet, getAutoSettingsText},
+	{"Autopause Game: ", autoPauseGameSet, getAutoPauseGameText},
+	{"EWRAM Overclock: ", ewramSet, getEWRAMText},
+	{"Autosleep: ", sleepSet, getSleepText},
+};
+const MItem debugItems[] = {
+	{"Debug Output:", debugTextSet, getDebugText},
+	{"Disable Background:", bgrLayerSet, getBgrLayerText},
+	{"Disable Sprites:", sprLayerSet, getSprLayerText},
+	{"Step Frame", stepFrame},
+};
+const MItem dipswitchItems[] = {
+	{"Difficulty: ", difficultSet, getDifficultText},
+	{"Coin A: ", coinASet, getCoinAText},
+	{"Coin B: ", coinBSet, getCoinBText},
+	{"Lives: ", livesSet, getLivesText},
+	{"Bonus: ", bonusSet, getBonusText},
+	{"Cabinet: ", cabinetSet, getCabinetText},
+	{"Demo Sound: ", demoSet, getDemoText},
+	{"Flip Screen: ", flipSet, getFlipText},
+	{"Upright Controls: ", uprightSet, getUprightText},
+	{"Service Mode: ", serviceSet, getServiceText},
+};
+const MItem fnList9[GAME_COUNT] = {
+	{"Green Beret", quickSelectGame},
+	{"Rush'n Attack (US)", quickSelectGame},
+	{"Green Beret (bootleg)", quickSelectGame},
+	{"Mr. Goemon (Japan)", quickSelectGame},
+};
+const MItem quitItems[] = {
+	{"Yes", exitEmulator},
+	{"No", backOutOfMenu},
+};
 
-u8 gGammaValue = 0;
+const Menu menu0 = MENU_M("", uiNullNormal, dummyItems);
+Menu menu1 = MENU_M("Main Menu", uiAuto, mainItems);
+const Menu menu2 = MENU_M("File Handling", uiAuto, fileItems);
+const Menu menu3 = MENU_M("Controller Settings", uiAuto, ctrlItems);
+const Menu menu4 = MENU_M("Display Settings", uiAuto, displayItems);
+const Menu menu5 = MENU_M("Other Settings", uiAuto, setItems);
+const Menu menu6 = MENU_M("Debug", uiAuto, debugItems);
+const Menu menu7 = MENU_M("Dipswitch Settings", uiDipswitches, dipswitchItems);
+const Menu menu8 = MENU_M("Help", uiAbout, dummyItems);
+const Menu menu9 = MENU_M("Load game", uiAuto, fnList9);
+const Menu menu10 = MENU_M("Exit?", uiAuto, quitItems);
 
-char *const autoTxt[]   = {"Off","On","With R"};
-char *const speedTxt[]  = {"Normal","200%","Max","50%"};
-char *const sleepTxt[]  = {"5min","10min","30min","Off"};
-char *const brighTxt[]  = {"I","II","III","IIII","IIIII"};
+const Menu *const menus[] = {&menu0, &menu1, &menu2, &menu3, &menu4, &menu5, &menu6, &menu7, &menu8, &menu9, &menu10 };
+
 char *const ctrlTxt[]   = {"1P","2P"};
 char *const dispTxt[]   = {"Unscaled","Scaled"};
-char *const flickTxt[]  = {"No Flicker","Flicker"};
 
 char *const coinTxt[]   = {
 	"1 Coin 1 Credit",  "1 Coin 2 Credits", "1 Coin 3 Credits", "1 Coin 4 Credits",
@@ -58,7 +151,9 @@ char *const singleTxt[] = {"Single","Dual"};
 
 /// This is called at the start of the emulator
 void setupGUI() {
+	emuSettings = AUTOPAUSE_EMULATION;
 //	keysSetRepeat(25, 4);	// Delay, repeat.
+	menu1.itemCount = ARRSIZE(mainItems) - (enableExit?0:1);
 	closeMenu();
 }
 
@@ -82,31 +177,6 @@ void uiNullNormal() {
 	uiNullDefault();
 }
 
-void uiFile() {
-	setupSubMenu("File Handling");
-	drawMenuItem("Load Game->");
-	drawMenuItem("Load State");
-	drawMenuItem("Save State");
-	drawMenuItem("Save Settings");
-	drawMenuItem("Reset Game");
-}
-
-void uiMainMenu() {
-	setupSubMenu("Main Menu");
-	drawMenuItem("File->");
-	drawMenuItem("Controller->");
-	drawMenuItem("Display->");
-	drawMenuItem("Settings->");
-	drawMenuItem("Debug->");
-	drawMenuItem("DipSwitches->");
-	drawMenuItem("About->");
-	drawMenuItem("Sleep");
-	drawMenuItem("Restart");
-	if (enableExit) {
-		drawMenuItem("Exit");
-	}
-}
-
 void uiAbout() {
 	setupSubMenu("About");
 	drawText("Select: Insert coin",3);
@@ -123,66 +193,15 @@ void uiAbout() {
 	drawText("ARMSN76496    " ARMSN76496VERSION, 19);
 }
 
-void uiController() {
-	setupSubMenu("Controller Settings");
-	drawSubItem("B Autofire: ", autoTxt[autoB]);
-	drawSubItem("A Autofire: ", autoTxt[autoA]);
-	drawSubItem("Controller: ", ctrlTxt[(joyCfg>>29)&1]);
-	drawSubItem("Swap A-B:   ", autoTxt[(joyCfg>>10)&1]);
-}
-
-void uiDisplay() {
-	setupSubMenu("Display Settings");
-	drawSubItem("Display: ", dispTxt[gScaling]);
-	drawSubItem("Scaling: ", flickTxt[gFlicker]);
-	drawSubItem("Gamma: ", brighTxt[gGammaValue]);
-}
-
-void uiSettings() {
-	setupSubMenu("Other Settings");
-	drawSubItem("Speed: ", speedTxt[(emuSettings>>6)&3]);
-	drawSubItem("Autoload State: ", autoTxt[(emuSettings>>2)&1]);
-	drawSubItem("Autosave Settings: ", autoTxt[(emuSettings>>1)&1]);
-	drawSubItem("Autopause Game: ", autoTxt[emuSettings&1]);
-	drawSubItem("EWRAM Overclock: ", autoTxt[ewram&1]);
-	drawSubItem("Autosleep: ", sleepTxt[(emuSettings>>8)&3]);
-}
-
-void uiDebug() {
-	setupSubMenu("Debug");
-	drawSubItem("Debug Output: ", autoTxt[gDebugSet&1]);
-	drawSubItem("Disable Background: ", autoTxt[gGfxMask&1]);
-	drawSubItem("Disable Sprites: ", autoTxt[(gGfxMask>>4)&1]);
-	drawSubItem("Step Frame", NULL);
-}
-
 void uiDipswitches() {
 	char s[10];
-	setupSubMenu("Dipswitch Settings");
-	drawSubItem("Difficulty: ", diffTxt[(g_dipSwitch1>>5)&3]);
-	drawSubItem("Coin A: ", coinTxt[g_dipSwitch0 & 0xF]);
-	drawSubItem("Coin B: ", coinTxt[(g_dipSwitch0>>4) & 0xF]);
-	drawSubItem("Lives: ", livesTxt[g_dipSwitch1 & 3]);
-	drawSubItem("Bonus: ", bonusTxt[(g_dipSwitch1>>3)&3]);
-	drawSubItem("Cabinet: ", cabTxt[(g_dipSwitch1>>2)&1]);
-	drawSubItem("Demo Sound: ", autoTxt[(g_dipSwitch1>>7)&1]);
-	drawSubItem("Flip Screen: ", autoTxt[g_dipSwitch2&1]);
-	drawSubItem("Upright Controls: ", singleTxt[(g_dipSwitch2>>1)&1]);
-	drawSubItem("Service Mode: ", autoTxt[(g_dipSwitch2>>2)&1]);
+	uiAuto();
 
 	setMenuItemRow(15);
 	int2Str(coinCounter0, s);
 	drawSubItem("CoinCounter1:       ", s);
 	int2Str(coinCounter1, s);
 	drawSubItem("CoinCounter2:       ", s);
-}
-
-void uiLoadGame() {
-	setupSubMenu("Load game");
-	drawMenuItem("Green Beret");
-	drawMenuItem("Rush'n Attack (US)");
-	drawMenuItem("Green Beret (bootleg)");
-	drawMenuItem("Mr. Goemon (Japan)");
 }
 
 void nullUINormal(int key) {
@@ -201,23 +220,30 @@ void resetGame() {
 void controllerSet() {				// See io.s: refreshEMUjoypads
 	joyCfg ^= 0x20000000;
 }
+const char *getControllerText() {
+	return ctrlTxt[(joyCfg>>29)&1];
+}
 
 /// Swap A & B buttons
 void swapABSet() {
 	joyCfg ^= 0x400;
 }
-
+const char *getSwapABText() {
+	return autoTxt[(joyCfg>>10)&1];
+}
 
 /// Turn on/off scaling
 void scalingSet(){
 	gScaling ^= 0x01;
 	refreshGfx();
 }
+const char *getScalingText() {
+	return dispTxt[gScaling];
+}
 
 /// Change gamma (brightness)
 void brightSet() {
-	gGammaValue++;
-	if (gGammaValue > 4) gGammaValue=0;
+	gammaSet();
 	paletteInit(gGammaValue);
 	paletteTxAll();					// Make new palette visible
 	setupMenuPalette();
@@ -227,10 +253,15 @@ void brightSet() {
 void bgrLayerSet(){
 	gGfxMask ^= 0x03;
 }
-
+const char *getBgrLayerText() {
+	return autoTxt[(gGfxMask>>1)&1];
+}
 /// Turn on/off rendering of sprites
 void sprLayerSet(){
 	gGfxMask ^= 0x10;
+}
+const char *getSprLayerText() {
+	return autoTxt[(gGfxMask>>4)&1];
 }
 
 
@@ -239,43 +270,73 @@ void coinASet() {
 	int i = (g_dipSwitch0+1) & 0xF;
 	g_dipSwitch0 = (g_dipSwitch0 & ~0xF) | i;
 }
+const char *getCoinAText() {
+	return coinTxt[g_dipSwitch0 & 0xF];
+}
 /// Number of coins for credits
 void coinBSet() {
 	int i = (g_dipSwitch0+0x10) & 0xF0;
 	g_dipSwitch0 = (g_dipSwitch0 & ~0xF0) | i;
+}
+const char *getCoinBText() {
+	return coinTxt[(g_dipSwitch0>>4) & 0xF];
 }
 /// Number of lifes to start with
 void livesSet() {
 	int i = (g_dipSwitch1+1) & 3;
 	g_dipSwitch1 = (g_dipSwitch1 & ~3) | i;
 }
+const char *getLivesText() {
+	return livesTxt[g_dipSwitch1 & 3];
+}
 /// At which score you get bonus lifes
 void bonusSet() {
 	int i = (g_dipSwitch1+8) & 0x18;
 	g_dipSwitch1 = (g_dipSwitch1 & ~0x18) | i;
+}
+const char *getBonusText() {
+	return bonusTxt[(g_dipSwitch1>>3)&3];
 }
 /// Game difficulty
 void difficultSet() {
 	int i = (g_dipSwitch1+0x20) & 0x60;
 	g_dipSwitch1 = (g_dipSwitch1 & ~0x60) | i;
 }
+const char *getDifficultText() {
+	return diffTxt[(g_dipSwitch1>>5)&3];
+}
 /// Cocktail/upright
 void cabinetSet() {
 	g_dipSwitch1 ^= 0x04;
+}
+const char *getCabinetText() {
+	return cabTxt[(g_dipSwitch1>>2)&1];
 }
 /// Demo sound on/off
 void demoSet() {
 	g_dipSwitch1 ^= 0x80;
 }
+const char *getDemoText() {
+	return autoTxt[(g_dipSwitch1>>7)&1];
+}
 /// Flip screen
 void flipSet() {
 	g_dipSwitch2 ^= 0x01;
+}
+const char *getFlipText() {
+	return autoTxt[g_dipSwitch2&1];
 }
 /// Dual or single controlls for upright set
 void uprightSet() {
 	g_dipSwitch2 ^= 0x02;
 }
+const char *getUprightText() {
+	return singleTxt[(g_dipSwitch2>>1)&1];
+}
 /// Test/Service mode
 void serviceSet() {
 	g_dipSwitch2 ^= 0x04;
+}
+const char *getServiceText() {
+	return autoTxt[(g_dipSwitch2>>2)&1];
 }

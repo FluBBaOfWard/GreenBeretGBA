@@ -14,6 +14,7 @@
 	.global romStart
 	.global vromBase0
 	.global promBase
+	.global gberetMapRom
 
 	.global ROM_Space
 	.global mainCpu
@@ -104,6 +105,17 @@ loadCart: 		;@ Called from C:  r0=rom number, r1=emuflags
 	bx lr
 
 ;@----------------------------------------------------------------------------
+gberetMapRom:
+;@----------------------------------------------------------------------------
+	and r0,r0,#0xE0
+	ldr r1,=mainCpu
+	ldr r1,[r1]
+	sub r1,r1,#0x3800
+	add r1,r1,r0,lsl#6
+	str r1,[z80ptr,#z80MemTbl+28]
+	bx lr
+
+;@----------------------------------------------------------------------------
 greenBeretMapping:						;@ Green Beret
 	.long 0x00, memZ80R0, rom_W									;@ ROM
 	.long 0x01, memZ80R1, rom_W									;@ ROM
@@ -174,7 +186,11 @@ vromBase0:
 promBase:
 	.long 0
 
-	.section .sbss
+#ifdef GBA
+	.section .sbss				;@ This is EWRAM on GBA with devkitARM
+#else
+	.section .bss
+#endif
 emptySpace:
 	.space 0x2000
 testState:

@@ -26,7 +26,7 @@
 soundInit:
 	.type soundInit STT_FUNC
 ;@----------------------------------------------------------------------------
-	stmfd sp!,{r3-r5,lr}
+	stmfd sp!,{r4-r5,lr}
 	mov r5,#REG_BASE
 
 ;@	ldrh r0,[r5,#REG_SGBIAS]
@@ -34,8 +34,8 @@ soundInit:
 ;@	orr r0,r0,#0x8000			;@ PWM 7-bit 131.072kHz
 ;@	strh r0,[r5,#REG_SGBIAS]
 
-	ldrb r2,soundMode			;@ If r2=0, no sound.
-	cmp r2,#1
+	ldrb r4,soundMode
+	cmp r4,#1					;@ If r4=0, no sound.
 
 	movmi r0,#0
 	ldreq r0,=0x0b040000		;@ Stop all channels, output ratio=100% dsA.  use directsound A for L&R, timer 0
@@ -64,16 +64,15 @@ soundInit:
 	bl sn76496Init				;@ Sound
 
 
-	ldrb r2,soundMode			;@ If r2=0, no sound.
-	cmp r2,#1
+	cmp r4,#1					;@ If r4=0, no sound.
 
-	mov r4,#0					;@ Timer 0 controls sample rate:
-	str r4,[r5,#REG_TM0CNT_L]	;@ Stop timer 0
-	ldreq r3,[snptr,#mixRate]	;@ 924=Low, 532=High.
-	rsbeq r4,r3,#0x810000		;@ Timer 0 on. Frequency = 0x1000000/r3 Hz
-	streq r4,[r5,#REG_TM0CNT_L]
+	mov r2,#0					;@ Timer 0 controls sample rate:
+	str r2,[r5,#REG_TM0CNT_L]	;@ Stop timer 0
+	ldreq r1,[snptr,#mixRate]	;@ 924=Low, 532=High.
+	rsbeq r2,r1,#0x810000		;@ Timer 0 on. Frequency = 0x1000000/r3 Hz
+	streq r2,[r5,#REG_TM0CNT_L]
 
-	ldmfd sp!,{r3-r5,lr}
+	ldmfd sp!,{r4-r5,lr}
 	bx lr
 
 ;@----------------------------------------------------------------------------
@@ -168,7 +167,11 @@ soundMode:
 	.byte 1
 	.space 3
 
-	.section .sbss
+#ifdef GBA
+	.section .sbss				;@ This is EWRAM on GBA with devkitARM
+#else
+	.section .bss
+#endif
 	.align 2
 SN76496_0:
 	.space snSize

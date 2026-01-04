@@ -21,7 +21,7 @@
 		9C41DD9822C7E4F100BD4C64 /* Main.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Main.h; sourceTree = "<group>"; };
 		9C41DD9922C7E4F100BD4C64 /* Gui.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = Gui.c; sourceTree = "<group>"; };
 		9C41DD9C22C7EADB00BD4C64 /* GreenBeretGBA_todo.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = GreenBeretGBA_todo.txt; sourceTree = "<group>"; };
-		9C41DD9D22C7EADB00BD4C64 /* readme.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = readme.txt; sourceTree = "<group>"; };
+		9C41DD9D22C7EADB00BD4C64 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		9C41DD9E22C7EADB00BD4C64 /* History.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = History.txt; sourceTree = "<group>"; };
 		9C41DDA022C7ECD200BD4C64 /* Version.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Version.h; sourceTree = "<group>"; };
 		9C41DDA122C7ECD200BD4C64 /* ARMZ80mac.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ARMZ80mac.h; sourceTree = "<group>"; };
@@ -74,7 +74,7 @@
 			children = (
 				9C41DD9C22C7EADB00BD4C64 /* GreenBeretGBA_todo.txt */,
 				9C41DD9E22C7EADB00BD4C64 /* History.txt */,
-				9C41DD9D22C7EADB00BD4C64 /* readme.txt */,
+				9C41DD9D22C7EADB00BD4C64 /* README.md */,
 				746D78E014ED9A6D00CC738F /* makefile */,
 				A48CC0251618E65200465E20 /* source */,
 				A4E891981889C882007ED6D7 /* graphics */,

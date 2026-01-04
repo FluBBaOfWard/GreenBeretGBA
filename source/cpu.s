@@ -6,13 +6,13 @@
 
 #define CYCLE_PSL (H_PIXEL_COUNT/2)
 
-	.global run
-	.global cpuReset
-	.global stepFrame
 	.global frameTotal
 	.global waitMaskIn
 	.global waitMaskOut
 
+	.global run
+	.global cpuReset
+	.global stepFrame
 
 	.syntax unified
 	.arm
