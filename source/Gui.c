@@ -14,7 +14,7 @@
 #include "K005849/Version.h"
 #include "SN76496/Version.h"
 
-#define EMUVERSION "V0.2.1 2026-01-04"
+#define EMUVERSION "V0.2.1 2026-01-12"
 
 static void scalingSet(void);
 static const char *getScalingText(void);
@@ -56,13 +56,13 @@ const MItem mainItems[] = {
 	{"File->", ui2},
 	{"Controller->", ui3},
 	{"Display->", ui4},
-	{"Settings->", ui5},
-	{"Debug->", ui6},
-	{"DipSwitches->", ui7},
-	{"Help->", ui8},
+	{"DipSwitches->", ui5},
+	{"Settings->", ui6},
+	{"Debug->", ui7},
+	{"About->", ui8},
 	{"Sleep", gbaSleep},
 	{"Restart", resetGame},
-	{"Exit", ui10},
+	{"Quit Emulator", ui10},
 };
 const MItem fileItems[] = {
 	{"Load Game->", ui9},
@@ -82,20 +82,6 @@ const MItem displayItems[] = {
 	{"Scaling: ", flickSet, getFlickText},
 	{"Gamma: ", brightSet, getGammaText},
 };
-const MItem setItems[] = {
-	{"Speed: ", speedSet, getSpeedText},
-	{"Autoload State: ", autoStateSet, getAutoStateText},
-	{"Autosave Settings: ", autoSettingsSet, getAutoSettingsText},
-	{"Autopause Game: ", autoPauseGameSet, getAutoPauseGameText},
-	{"EWRAM Overclock: ", ewramSet, getEWRAMText},
-	{"Autosleep: ", sleepSet, getSleepText},
-};
-const MItem debugItems[] = {
-	{"Debug Output:", debugTextSet, getDebugText},
-	{"Disable Background:", bgrLayerSet, getBgrLayerText},
-	{"Disable Sprites:", sprLayerSet, getSprLayerText},
-	{"Step Frame", stepFrame},
-};
 const MItem dipswitchItems[] = {
 	{"Difficulty: ", difficultSet, getDifficultText},
 	{"Coin A: ", coinASet, getCoinAText},
@@ -107,6 +93,20 @@ const MItem dipswitchItems[] = {
 	{"Flip Screen: ", flipSet, getFlipText},
 	{"Upright Controls: ", uprightSet, getUprightText},
 	{"Service Mode: ", serviceSet, getServiceText},
+};
+const MItem setItems[] = {
+	{"Speed: ", speedSet, getSpeedText},
+	{"Autoload State: ", autoStateSet, getAutoStateText},
+	{"Autosave Settings: ", autoSettingsSet, getAutoSettingsText},
+	{"Autopause Game: ", autoPauseGameSet, getAutoPauseGameText},
+	{"EWRAM Overclock: ", ewramSet, getEWRAMText},
+	{"Autosleep: ", sleepSet, getSleepText},
+};
+const MItem debugItems[] = {
+	{"Debug Output: ", debugTextSet, getDebugText},
+	{"Disable Background: ", bgrLayerSet, getBgrLayerText},
+	{"Disable Sprites: ", sprLayerSet, getSprLayerText},
+	{"Step Frame", stepFrame},
 };
 const MItem fnList9[GAME_COUNT] = {
 	{"Green Beret", quickSelectGame},
@@ -124,12 +124,12 @@ Menu menu1 = MENU_M("Main Menu", uiAuto, mainItems);
 const Menu menu2 = MENU_M("File Handling", uiAuto, fileItems);
 const Menu menu3 = MENU_M("Controller Settings", uiAuto, ctrlItems);
 const Menu menu4 = MENU_M("Display Settings", uiAuto, displayItems);
-const Menu menu5 = MENU_M("Other Settings", uiAuto, setItems);
-const Menu menu6 = MENU_M("Debug", uiAuto, debugItems);
-const Menu menu7 = MENU_M("Dipswitch Settings", uiDipswitches, dipswitchItems);
-const Menu menu8 = MENU_M("Help", uiAbout, dummyItems);
+const Menu menu5 = MENU_M("Dipswitch Settings", uiDipswitches, dipswitchItems);
+const Menu menu6 = MENU_M("Other Settings", uiAuto, setItems);
+const Menu menu7 = MENU_M("Debug", uiAuto, debugItems);
+const Menu menu8 = MENU_M("About", uiAbout, dummyItems);
 const Menu menu9 = MENU_M("Load game", uiAuto, fnList9);
-const Menu menu10 = MENU_M("Exit?", uiAuto, quitItems);
+const Menu menu10 = MENU_M("Quit Emulator?", uiAuto, quitItems);
 
 const Menu *const menus[] = {&menu0, &menu1, &menu2, &menu3, &menu4, &menu5, &menu6, &menu7, &menu8, &menu9, &menu10 };
 
@@ -178,7 +178,7 @@ void uiNullNormal() {
 }
 
 void uiAbout() {
-	setupSubMenu("About");
+	setupSubMenuText();
 	drawText("Select: Insert coin",3);
 	drawText("Start:  Start button",4);
 	drawText("DPad:   Move character",5);

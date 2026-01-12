@@ -57,7 +57,7 @@ ROM_Space:
 	.incbin "gberet/621a07.6f" // Sprite Pal LUT
 	.incbin "gberet/621a08.7f" // Character Pal LUT
 */
-	.section .ewram,"ax"
+	.section .ewram, "ax", %progbits
 	.align 2
 ;@----------------------------------------------------------------------------
 machineInit: 	;@ Called from C

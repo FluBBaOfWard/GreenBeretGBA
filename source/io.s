@@ -22,7 +22,7 @@
 	.syntax unified
 	.arm
 
-	.section .ewram,"ax"
+	.section .ewram, "ax", %progbits
 	.align 2
 ;@----------------------------------------------------------------------------
 ioReset:

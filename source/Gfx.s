@@ -349,24 +349,18 @@ k005849_0W:					;@ I/O write  (0xE000-0xE044)
 k005849_0:
 	.space k005849Size
 ;@----------------------------------------------------------------------------
-	.section .ewram, "ax"
-
-
+#ifdef GBA
+	.section .sbss				;@ This is EWRAM on GBA with devkitARM
+#else
+	.section .bss
+#endif
+	.align 2
 gfxState:
 adjustBlend:
 	.long 0
 windowTop:
 	.long 0,0,0,0		;@ L/R scrolling in unscaled mode
 
-	.byte 0
-	.byte 0
-	.byte 0,0
-
-#ifdef GBA
-	.section .sbss				;@ This is EWRAM on GBA with devkitARM
-#else
-	.section .bss
-#endif
 scrollTemp:
 	.space 0x100*4
 OAM_BUFFER1:
