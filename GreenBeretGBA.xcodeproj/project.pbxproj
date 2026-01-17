@@ -37,7 +37,6 @@
 		9C41DDAC22C7ECE000BD4C64 /* History.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = History.txt; sourceTree = "<group>"; };
 		9C41DDAF22C7ECE900BD4C64 /* Version.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Version.h; sourceTree = "<group>"; };
 		9C41DDB022C7ECE900BD4C64 /* SN76496.s */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = SN76496.s; sourceTree = "<group>"; };
-		9C41DDB322C7ECE900BD4C64 /* ReadMe.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = ReadMe.txt; sourceTree = "<group>"; };
 		9C41DDB522C7ECF200BD4C64 /* EmuMenu.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EmuMenu.h; sourceTree = "<group>"; };
 		9C41DDB822C7ECF200BD4C64 /* AsmExtra.s */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.asm; path = AsmExtra.s; sourceTree = "<group>"; };
 		9C41DDB922C7ECF200BD4C64 /* AsmExtra.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AsmExtra.h; sourceTree = "<group>"; };
@@ -134,7 +133,6 @@
 			children = (
 				9C175BFE28BE64EE00293DA7 /* SN76496_todo.txt */,
 				9C175BFF28BE64EE00293DA7 /* README.md */,
-				9C41DDB322C7ECE900BD4C64 /* ReadMe.txt */,
 				9CC5FEBE22F0BBA800AFB8DF /* History.txt */,
 				9C41DDAF22C7ECE900BD4C64 /* Version.h */,
 				9C8F3403248B96C400996E5A /* SN76496.h */,
@@ -174,6 +172,8 @@
 				35BA496A1886BBE3006870D9 /* Main.c */,
 				9C41DD9722C7E4F100BD4C64 /* Gui.h */,
 				9C41DD9922C7E4F100BD4C64 /* Gui.c */,
+				9C41DDC022C7EEB300BD4C64 /* FileHandling.h */,
+				9C41DDBF22C7EEB300BD4C64 /* FileHandling.c */,
 				9C9CA7AA25F2D44200DC6DF5 /* GreenBeret.h */,
 				9C9CA7A925F2D44200DC6DF5 /* GreenBeret.c */,
 				9C50825A25D6A9F400A8E1BA /* Cart.h */,
@@ -187,8 +187,6 @@
 				9C41DDC222C7EEB300BD4C64 /* Gfx.h */,
 				9C50825B25D6A9F400A8E1BA /* Gfx.s */,
 				9C50825825D6A9F400A8E1BA /* Memory.s */,
-				9C41DDC022C7EEB300BD4C64 /* FileHandling.h */,
-				9C41DDBF22C7EEB300BD4C64 /* FileHandling.c */,
 			);
 			path = source;
 			sourceTree = "<group>";

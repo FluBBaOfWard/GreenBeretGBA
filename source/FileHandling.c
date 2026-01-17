@@ -1,16 +1,12 @@
 #include <gba.h>
-
-//#include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
-#include <sys/dir.h>
 
 #include "FileHandling.h"
 #include "Emubase.h"
-#include "Main.h"
 #include "Shared/EmuMenu.h"
 #include "Shared/EmuSettings.h"
+#include "Shared/AsmExtra.h"
+#include "Main.h"
 #include "Gui.h"
 #include "Cart.h"
 #include "Gfx.h"
@@ -20,7 +16,7 @@
 static const char *const folderName = "acds";
 static const char *const settingName = "settings.cfg";
 
-configdata cfg;
+EWRAM_BSS ConfigData cfg;
 
 static const char *const gameNames[GAME_COUNT] = {"gberet","rushatck","gberetb","mrgoemon"};
 static const char *const gameZipNames[GAME_COUNT] = {"gberet.zip","rushatck.zip","gberetb.zip","mrgoemon.zip"};
@@ -39,67 +35,59 @@ static const int romFilesizes[GAME_COUNT][11] = {
 };
 
 //---------------------------------------------------------------------------------
+void applyConfigData(void) {
+	emuSettings  = cfg.emuSettings & ~EMUSPEED_MASK; // Clear speed setting.
+	gScaling     = cfg.scaling & SCALED;
+	gFlicker     = cfg.flicker & 1;
+	gGammaValue  = cfg.gammaValue;
+	sleepTime    = cfg.sleepTime;
+	joyCfg       = (joyCfg & ~0x400) | ((cfg.controller & 1) << 10);
+	gDipSwitch0 = cfg.dipSwitch0;
+	gDipSwitch1 = cfg.dipSwitch1;
+	gDipSwitch2 = cfg.dipSwitch2;
+}
+
+void updateConfigData(void) {
+	strcpy(cfg.magic, "cfg");
+	cfg.emuSettings = emuSettings & ~EMUSPEED_MASK; // Clear speed setting.
+	cfg.scaling     = gScaling & SCALED;
+	cfg.flicker     = gFlicker & 1;
+	cfg.gammaValue  = gGammaValue;
+	cfg.sleepTime   = sleepTime;
+	cfg.controller  = (joyCfg >> 10) & 1;
+	cfg.dipSwitch0  = gDipSwitch0;
+	cfg.dipSwitch1  = gDipSwitch1;
+	cfg.dipSwitch2  = gDipSwitch2;
+}
+
+void initSettings() {
+	memset(&cfg, 0, sizeof(ConfigData));
+	cfg.emuSettings = AUTOPAUSE_EMULATION | AUTOLOAD_NVRAM;
+	cfg.scaling     = SCALED;
+	cfg.flicker     = 1;
+	cfg.sleepTime   = 60*60*5;
+	cfg.dipSwitch1  = 0x85;		// Lives, cabinet & demo sound.
+
+	applyConfigData();
+}
+
 int loadSettings() {
-//	FILE *file;
-/*
-	if (findFolder(folderName)) {
-		return 1;
-	}
-	if ((file = fopen(settingName, "r"))) {
-		fread(&cfg, 1, sizeof(configdata), file);
-		fclose(file);
-		if (!strstr(cfg.magic,"cfg")) {
-			infoOutput("Error in settings file.");
-			return 1;
-		}
+	bytecopy_((u8 *)&cfg, (u8 *)SRAM+0x10000-sizeof(ConfigData), sizeof(ConfigData));
+	if (strstr(cfg.magic, "cfg")) {
+		applyConfigData();
+		infoOutput("Settings loaded.");
+		return 0;
 	}
 	else {
-		infoOutput("Couldn't open file:");
-		infoOutput(settingName);
-		return 1;
+		updateConfigData();
+		infoOutput("Error in settings file.");
 	}
-*/
-	g_dipSwitch0 = cfg.dipSwitch0;
-	g_dipSwitch1 = cfg.dipSwitch1;
-	g_dipSwitch2 = cfg.dipSwitch2;
-	gScaling     = cfg.scaling & SCALED;
-	gFlicker     = cfg.flicker&1;
-	gGammaValue  = cfg.gammaValue;
-	emuSettings  = cfg.emuSettings &~ 0xC0;			// Clear speed setting.
-	sleepTime    = cfg.sleepTime;
-	joyCfg       = (joyCfg&~0x400)|((cfg.controller&1)<<10);
-//	strlcpy(currentDir, cfg.currentPath, sizeof(currentDir));
-
-	infoOutput("Settings loaded.");
-	return 0;
+	return 1;
 }
 void saveSettings() {
-//	FILE *file;
+	updateConfigData();
 
-	strcpy(cfg.magic,"cfg");
-	cfg.dipSwitch0  = g_dipSwitch0;
-	cfg.dipSwitch1  = g_dipSwitch1;
-	cfg.dipSwitch2  = g_dipSwitch2;
-	cfg.scaling     = gScaling & SCALED;
-	cfg.flicker     = gFlicker&1;
-	cfg.gammaValue  = gGammaValue;
-	cfg.emuSettings = emuSettings &~ 0xC0;			// Clear speed setting.
-	cfg.sleepTime   = sleepTime;
-	cfg.controller  = (joyCfg>>10)&1;
-//	strlcpy(cfg.currentPath, currentDir, sizeof(currentDir));
-/*
-	if (findFolder(folderName)) {
-		return;
-	}
-	if ((file = fopen(settingName, "w"))) {
-		fwrite(&cfg, 1, sizeof(configdata), file);
-		fclose(file);
-		infoOutput("Settings saved.");
-	}
-	else {
-		infoOutput("Couldn't open file:");
-		infoOutput(settingName);
-	}*/
+	bytecopy_((u8 *)SRAM+0x10000-sizeof(ConfigData), (u8 *)&cfg, sizeof(ConfigData));
 	infoOutput("Settings saved.");
 }
 
